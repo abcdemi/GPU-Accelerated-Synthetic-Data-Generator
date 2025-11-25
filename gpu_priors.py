@@ -4,6 +4,7 @@ from numba.cuda.random import create_xoroshiro128p_states, xoroshiro128p_uniform
 import math
 
 # --- THE CUDA KERNEL ---
+# This runs on the RTX 3080.
 # Logic: Each BLOCK generates one distinct "Dataset". 
 #        Each THREAD generates one "Row" of data.
 @cuda.jit
@@ -17,9 +18,10 @@ def generate_tabular_priors_kernel(rng_states, out_x, out_y, coeffs, complexitie
     dataset_idx = cuda.blockIdx.x
     row_idx = cuda.threadIdx.x
     
-    if tid < out_x.shape[0] * out_x.shape[1]:
+    # FIX: Check bounds against out_y (Total Rows), not out_x shape
+    if tid < out_y.shape[0]:
         # 1. Generate Features (X)
-        # Let's say we have 4 features per dataset
+        # We have 4 features per dataset
         x1 = xoroshiro128p_uniform_float32(rng_states, tid)
         x2 = xoroshiro128p_uniform_float32(rng_states, tid)
         x3 = xoroshiro128p_uniform_float32(rng_states, tid)
@@ -27,7 +29,8 @@ def generate_tabular_priors_kernel(rng_states, out_x, out_y, coeffs, complexitie
         
         # Store X in global memory (flattened)
         # Structure: [Dataset 0 Row 0, Dataset 0 Row 1... ]
-        base_idx = (dataset_idx * cuda.blockDim.x * 4) + (row_idx * 4)
+        # Each thread writes 4 values, so we multiply tid by 4
+        base_idx = tid * 4
         out_x[base_idx + 0] = x1
         out_x[base_idx + 1] = x2
         out_x[base_idx + 2] = x3
@@ -53,8 +56,7 @@ def generate_tabular_priors_kernel(rng_states, out_x, out_y, coeffs, complexitie
             y_val = (x1 * c1) + (x2 * c2) + (x3 * c3) - (x4 * c4)
             
         # Write Y to global memory
-        y_idx = (dataset_idx * cuda.blockDim.x) + row_idx
-        out_y[y_idx] = y_val
+        out_y[tid] = y_val
 
 class GPUPriorGenerator:
     def __init__(self, num_datasets=1000, rows_per_dataset=256):
