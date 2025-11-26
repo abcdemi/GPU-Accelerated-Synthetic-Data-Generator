@@ -24,9 +24,10 @@ def cpu_version_heavy(num_datasets, rows):
     return results_x, results_y
 
 def run_tests():
-    # SETTINGS: 100,000 Datasets
-    N_DATASETS = 100_000 
-    ROWS = 256
+    # --- CONFIGURATION ---
+    # MASSIVE scale in count, SMALL scale in size (TabPFN style)
+    N_DATASETS = 1000000 
+    ROWS = 64 # Small sample size (Few-shot learning)
     
     print(f"--- SETTING UP: {N_DATASETS} Datasets on RTX 3080 ---")
     print("Mode: HIGH COMPLEXITY (Sin/Cos/Tanh/Exp)")
