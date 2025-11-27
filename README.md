@@ -3,7 +3,7 @@
 **Accelerating Tabular Foundation Model Pre-training via Parallelized Structural Causal Models.**
 
 ## 🚀 The Problem
-Modern **Tabular Foundation Models** (like TabPFN) are pre-trained on millions of synthetic datasets generated from "Priors" (Structural Causal Models).
+Modern **Tabular Foundation Models** are pre-trained on millions of synthetic datasets generated from "Priors" (Structural Causal Models).
 
 The industry standard approach generates these datasets on the CPU using Numpy/Pandas. This creates two critical bottlenecks:
 1.  **Loop Overhead:** Foundation models often use "Few-Shot" learning (tiny datasets of <100 rows). Generating 1,000,000 tiny datasets sequentially on a CPU incurs massive Python loop overhead.
