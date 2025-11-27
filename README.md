@@ -2,11 +2,6 @@
 
 **Accelerating Tabular Foundation Model Pre-training via Parallelized Structural Causal Models.**
 
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
-![CUDA](https://img.shields.io/badge/NVIDIA-CUDA-green)
-![PyTorch](https://img.shields.io/badge/PyTorch-Zero--Copy-orange)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
-
 ## 🚀 The Problem
 Modern **Tabular Foundation Models** (like TabPFN) are pre-trained on millions of synthetic datasets generated from "Priors" (Structural Causal Models).
 
@@ -72,7 +67,7 @@ from gpu_priors import GPUPriorGenerator
 import torch
 
 # 1. Initialize Generator (1 Million Datasets)
-gen = GPUPriorGenerator(num_datasets=1_000_000, rows_per_dataset=64)
+gen = GPUPriorGenerator(num_datasets=1000000, rows_per_dataset=64)
 
 # 2. Generate directly in VRAM
 d_x, d_y = gen.generate()
@@ -101,5 +96,5 @@ MIT License. Free for educational and research use.
 ---
 
 ### Author
-**[Your Name]**
+**abcdemi**
 *Targeting ML Systems & Foundation Model Infrastructure.*
